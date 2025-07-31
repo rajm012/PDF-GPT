@@ -7,7 +7,7 @@ from typing import Dict, Any, List
 import logging
 
 # Import configuration
-from config import config
+from config_loader import config_mapping, config
 
 # Import our custom modules
 from pdf_processor import PDFProcessor
@@ -19,24 +19,25 @@ app = Flask(__name__)
 
 # Load configuration
 config_name = os.getenv('FLASK_ENV', 'development')
-app.config.from_object(config[config_name])
+config_class = config_mapping.get(config_name, config_mapping['default'])()
+app.config.from_object(config_class)
 
 # Initialize configuration if needed
-if hasattr(config[config_name], 'init_app'):
-    config[config_name].init_app(app)
+if hasattr(config_class, 'init_app'):
+    config_class.init_app(app)
 
 # Configure CORS
 CORS(app)
 
 # Configure logging
 if not app.debug:
-    logging.basicConfig(level=getattr(logging, app.config['LOG_LEVEL']))
+    logging.basicConfig(level=getattr(logging, config.get_flat('LOG_LEVEL', 'INFO')))
 logger = logging.getLogger(__name__)
 
-# Configuration from app config
-UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
-VECTOR_DB_PATH = app.config['VECTOR_DB_PATH']
-MAX_FILE_SIZE = app.config['MAX_FILE_SIZE']
+# Configuration from TOML/env variables
+UPLOAD_FOLDER = config.get_flat('UPLOAD_FOLDER', 'data/uploads')
+VECTOR_DB_PATH = config.get_flat('VECTOR_DB_PATH', 'data/vector_db')
+MAX_FILE_SIZE = config.get_flat('MAX_FILE_SIZE', 50) * 1024 * 1024  # Convert MB to bytes
 
 # Ensure directories exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)

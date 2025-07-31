@@ -3,6 +3,9 @@ streamlit==1.29.0
 flask==3.0.0
 flask-cors==4.0.0
 
+# Configuration
+toml==0.10.2
+
 # PDF processing
 PyMuPDF==1.23.26
 pdfplumber==0.10.3

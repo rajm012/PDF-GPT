@@ -6,31 +6,51 @@ from datetime import datetime
 from typing import Dict, Any, List
 import logging
 
+# Import configuration
+from config import config
+
 # Import our custom modules
 from pdf_processor import PDFProcessor
 from llm_handler import LLMHandler
 from vector_store import VectorStore
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 # Initialize Flask app
 app = Flask(__name__)
+
+# Load configuration
+config_name = os.getenv('FLASK_ENV', 'development')
+app.config.from_object(config[config_name])
+
+# Initialize configuration if needed
+if hasattr(config[config_name], 'init_app'):
+    config[config_name].init_app(app)
+
+# Configure CORS
 CORS(app)
 
-# Configuration
-UPLOAD_FOLDER = "data/uploads"
-VECTOR_DB_PATH = "data/vector_db"
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+# Configure logging
+if not app.debug:
+    logging.basicConfig(level=getattr(logging, app.config['LOG_LEVEL']))
+logger = logging.getLogger(__name__)
+
+# Configuration from app config
+UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
+VECTOR_DB_PATH = app.config['VECTOR_DB_PATH']
+MAX_FILE_SIZE = app.config['MAX_FILE_SIZE']
 
 # Ensure directories exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(VECTOR_DB_PATH, exist_ok=True)
 
 # Initialize components
-pdf_processor = PDFProcessor()
-llm_handler = LLMHandler()
+pdf_processor = PDFProcessor(
+    chunk_size=app.config['CHUNK_SIZE'],
+    chunk_overlap=app.config['CHUNK_OVERLAP']
+)
+llm_handler = LLMHandler(
+    host=app.config['OLLAMA_HOST'],
+    model=app.config['OLLAMA_MODEL']
+)
 vector_store = VectorStore(VECTOR_DB_PATH)
 
 # Store document metadata

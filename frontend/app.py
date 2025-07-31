@@ -16,8 +16,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Backend API URL
-API_BASE = "http://127.0.0.1:5000"
+# Backend API URL - use environment variable in production
+API_BASE = os.getenv("BACKEND_URL", "http://127.0.0.1:5000")
 
 def upload_pdf(file) -> Optional[str]:
     """Upload PDF to backend and return document ID"""

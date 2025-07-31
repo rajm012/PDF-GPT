@@ -28,41 +28,58 @@ A powerful application that allows you to upload PDF documents and have intellig
    ```bash
    # Install Ollama from https://ollama.ai/
    # Pull a model (e.g., Mistral)
-   ollama pull mistral
+   ollama pull llama3
    ```
 
-### Installation & Setup
+### Quick Start (Development)
 
-The project comes with a pre-configured virtual environment and all dependencies installed.
-
-**Quick Start:**
+**Option 1: All-in-One Launcher**
 ```bash
-# Start both backend and frontend
 python run_app.py
 ```
 
-**Manual Start (if preferred):**
-1. **Start backend:**
-   ```bash
-   .\start_backend.bat
-   ```
+**Option 2: Manual Start**
+```bash
+# Terminal 1: Backend
+.\start_backend.bat
 
-2. **Start frontend (in another terminal):**
-   ```bash
-   .\start_frontend.bat
-   ```
+# Terminal 2: Frontend  
+.\start_frontend.bat
+```
 
-### Using the Application
+### Production Deployment 🐳
 
-1. **Backend API**: http://localhost:5000
-2. **Frontend UI**: http://localhost:8501 (opens automatically)
+**Docker Deployment (Recommended)**
+```bash
+# One-command deployment
+./deploy.sh
+# or on Windows:
+deploy.bat
 
-### First Time Setup
+# Manual Docker steps
+docker-compose up -d
+```
 
-1. The application will automatically open in your browser
-2. Upload a PDF using the sidebar file uploader
-3. Click "Process PDF" to extract and index the content
-4. Start chatting with your document!
+**Manual Production Setup**
+```bash
+# Install production dependencies
+pip install -r requirements-prod.txt
+
+# Set environment
+export FLASK_ENV=production
+
+# Start with Gunicorn
+gunicorn --bind 0.0.0.0:5000 --workers 4 backend.app:app
+```
+
+### 📱 Application URLs
+
+- **Development**: http://localhost:8501
+- **Production Frontend**: http://localhost:8501  
+- **Backend API**: http://localhost:5000
+- **Nginx Proxy**: http://localhost:80
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## 📁 Project Structure
 
@@ -97,6 +114,22 @@ PDF-GPT/
 - 🗣️ Voice input (Whisper integration)
 - 📄 Export summaries
 - 📊 Quiz generation from content
+
+## 🚀 Deployment Ready
+
+### Production Features
+- **🐳 Docker Support**: Complete containerization with docker-compose
+- **🔧 Production Config**: Gunicorn, Nginx, environment management
+- **📊 Monitoring**: Health checks, logging, and error tracking
+- **🔒 Security**: Rate limiting, CORS, file validation
+- **⚡ Performance**: Multi-worker setup, caching, optimization
+- **☁️ Cloud Ready**: AWS, GCP, Azure deployment guides
+
+### Scaling Options
+- **Multi-instance**: Docker Compose scaling
+- **Load Balancing**: Nginx reverse proxy
+- **Database**: Persistent vector storage
+- **Session Management**: Redis integration
 
 ## 🐛 Troubleshooting
 

@@ -31,13 +31,13 @@ CORS(app)
 
 # Configure logging
 if not app.debug:
-    logging.basicConfig(level=getattr(logging, config.get_flat('LOG_LEVEL', 'INFO')))
+    logging.basicConfig(level=getattr(logging, config.get('logging', 'LOG_LEVEL', 'INFO')))
 logger = logging.getLogger(__name__)
 
 # Configuration from TOML/env variables
-UPLOAD_FOLDER = config.get_flat('UPLOAD_FOLDER', 'data/uploads')
-VECTOR_DB_PATH = config.get_flat('VECTOR_DB_PATH', 'data/vector_db')
-MAX_FILE_SIZE = config.get_flat('MAX_FILE_SIZE', 50) * 1024 * 1024  # Convert MB to bytes
+UPLOAD_FOLDER = config.get('storage', 'UPLOAD_FOLDER', 'data/uploads')
+VECTOR_DB_PATH = config.get('storage', 'VECTOR_DB_PATH', 'data/vector_db')
+MAX_FILE_SIZE = config.get('storage', 'MAX_FILE_SIZE', 50) * 1024 * 1024  # Convert MB to bytes
 
 # Ensure directories exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)

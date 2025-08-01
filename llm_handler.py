@@ -11,15 +11,14 @@ class LLMHandler:
     
     def __init__(self, 
                  host: str = "http://localhost:11434",
-                 model: str = "mistral",
+                 model: str = "gemma3",
                  timeout: int = 60):
         self.host = host
         self.model = model
         self.timeout = timeout
         
-        # Load from environment if available
-        self.host = os.getenv("OLLAMA_HOST", self.host)
-        self.model = os.getenv("OLLAMA_MODEL", self.model)
+        # Note: We don't override with environment variables here since we want to use TOML config
+        # If you need to override via environment, set it in the TOML config or Flask config instead
     
     def check_status(self) -> bool:
         """Check if Ollama is running and model is available"""

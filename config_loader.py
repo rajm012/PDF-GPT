@@ -124,24 +124,24 @@ class Config:
     """Base configuration class with TOML support"""
     
     def __init__(self):
-        self.SECRET_KEY = config.get_flat('SECRET_KEY', 'dev-secret-key-change-in-production')
-        self.UPLOAD_FOLDER = config.get_flat('UPLOAD_FOLDER', 'data/uploads')
-        self.VECTOR_DB_PATH = config.get_flat('VECTOR_DB_PATH', 'data/vector_db')
-        self.MAX_FILE_SIZE = config.get_flat('MAX_FILE_SIZE', 50) * 1024 * 1024  # Convert MB to bytes
-        self.CHUNK_SIZE = config.get_flat('CHUNK_SIZE', 1000)
-        self.CHUNK_OVERLAP = config.get_flat('CHUNK_OVERLAP', 200)
+        self.SECRET_KEY = config.get('security', 'SECRET_KEY', 'dev-secret-key-change-in-production')
+        self.UPLOAD_FOLDER = config.get('storage', 'UPLOAD_FOLDER', 'data/uploads')
+        self.VECTOR_DB_PATH = config.get('storage', 'VECTOR_DB_PATH', 'data/vector_db')
+        self.MAX_FILE_SIZE = config.get('storage', 'MAX_FILE_SIZE', 50) * 1024 * 1024  # Convert MB to bytes
+        self.CHUNK_SIZE = config.get('storage', 'CHUNK_SIZE', 1000)
+        self.CHUNK_OVERLAP = config.get('storage', 'CHUNK_OVERLAP', 200)
         
         # Ollama configuration
-        self.OLLAMA_HOST = config.get_flat('OLLAMA_HOST', 'http://localhost:11434')
-        self.OLLAMA_MODEL = config.get_flat('OLLAMA_MODEL', 'llama3')
+        self.OLLAMA_HOST = config.get('server', 'OLLAMA_HOST', 'http://localhost:11434')
+        self.OLLAMA_MODEL = config.get('server', 'OLLAMA_MODEL', 'llama3')
         
         # Logging
-        self.LOG_LEVEL = config.get_flat('LOG_LEVEL', 'INFO')
-        self.LOG_FILE = config.get_flat('LOG_FILE', 'logs/app.log')
+        self.LOG_LEVEL = config.get('logging', 'LOG_LEVEL', 'INFO')
+        self.LOG_FILE = config.get('logging', 'LOG_FILE', 'logs/app.log')
         
         # Performance
-        self.WORKERS = config.get_flat('WORKERS', 4)
-        self.THREADS = config.get_flat('THREADS', 2)
+        self.WORKERS = config.get('performance', 'WORKERS', 4)
+        self.THREADS = config.get('performance', 'THREADS', 2)
 
 class DevelopmentConfig(Config):
     """Development configuration"""
@@ -165,7 +165,7 @@ class ProductionConfig(Config):
     @staticmethod
     def init_app(app):
         # Ensure log directory exists
-        log_file = config.get_flat('LOG_FILE', 'logs/app.log')
+        log_file = config.get('logging', 'LOG_FILE', 'logs/app.log')
         log_dir = os.path.dirname(log_file)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
